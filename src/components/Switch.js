@@ -1,7 +1,7 @@
 import React from 'react';
 import {ThemeContext} from '../context/ThemeContext';
 import '../styles/Switch.css';
-import firebase from "../base";
+import firebase from './firebase';
 
 class Switch extends React.Component{
     static contextType = ThemeContext;
