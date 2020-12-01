@@ -5,8 +5,9 @@ import MicrophoneOn from '../images/MicrophoneOn.svg';
 
 const Microphone = (props) => {
     return (
-        <div className="google-microphone" onClick={props.toggleMicrophone}>
-            {props.audio ? <img src={MicrophoneOn} alt="Microphone On" />
+        <div className="google-microphone">
+            {props.audioStatus ? <img src={MicrophoneOn} alt="Microphone On"
+                                onClick={props.stopListening}/>
                 : <img src={MicrophoneOff} alt="Microphone Off" onClick={props.startListening}/>}
         </div>
     )

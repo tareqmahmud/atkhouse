@@ -4,8 +4,8 @@ import Microphone from './components/Microphone';
 import Light from './components/Light';
 import Switch from './components/Switch';
 import ThemeProvider from './context/ThemeContext';
-import firebase from "./base";
-import {matchLightActionFromVoice} from "./utils/speechToText";
+import firebase from './base';
+import {matchLightActionFromVoice} from './utils/speechToText';
 
 class App extends Component {
     constructor(props) {
@@ -28,16 +28,19 @@ class App extends Component {
     }
 
     stopMicrophone() {
+        console.log('Stop Microphone');
         this.state.audio.getTracks().forEach(track => track.stop());
         this.setState({audio: null});
     }
 
     stopListening() {
+        console.log('Stop Listening');
         const audioTranscript = document.getElementById('audioTranscript');
         audioTranscript.innerText = null;
     }
 
     toggleMicrophone() {
+        console.log('Toggle Listening');
         this.state.audio ? this.stopMicrophone() : this.getMicrophone();
     }
 

@@ -26,40 +26,59 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
 }));
-export default function ButtonAppBar(props) {
-    const [audio, setAudio] = useState(null);
-    const classes = useStyles();
-    let recognition = null;
 
-    const getMicrophone = async () => {
+export default class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            audio: null
+        };
+        this.toggleMicrophone = this.toggleMicrophone.bind(this);
+        this.startListening = this.startListening.bind(this);
+        this.stopListening = this.stopListening.bind(this);
+        this.stopMicrophone = this.stopMicrophone.bind(this);
+        this.getMicrophone = this.getMicrophone.bind(this);
+        this.recognition = null;
+    }
+
+    async getMicrophone() {
         const audio = await navigator.mediaDevices.getUserMedia({
             audio: true,
             video: false
         });
-        setAudio({audio});
+        this.setState({audio});
     }
 
-    const stopMicrophone = () => {
-        audio.getTracks().forEach(track => track.stop());
-        setAudio({audio: null});
+    stopMicrophone() {
+        this.state.audio.getTracks().forEach(track => track.stop());
+        this.recognition = null;
+        const audioTranscript = document.getElementById('audioTranscript');
+        audioTranscript.innerText = null;
+        this.setState({audio: null});
     }
 
-    const stopListening = () => {
+    stopListening() {
         const audioTranscript = document.getElementById('audioTranscript');
         audioTranscript.innerText = null;
     }
 
-    const toggleMicrophone = () => {
-        audio ? stopMicrophone() : getMicrophone();
+    toggleMicrophone() {
+        this.state.audio ? this.stopMicrophone() : this.getMicrophone();
     }
 
-    const startListening = () => {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognition = new SpeechRecognition();
-        recognition.interimResults = true;
-        recognition.lang = 'en-US';
+    async startListening() {
+        const audio = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: false
+        });
+        this.setState({audio});
 
-        recognition.addEventListener('result', e => {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        this.recognition = new SpeechRecognition();
+        this.recognition.interimResults = true;
+        this.recognition.lang = 'en-US';
+
+        this.recognition.addEventListener('result', e => {
             const transcript = Array.from(e.results)
                 .map(result => result[0])
                 .map(result => result.transcript);
@@ -81,67 +100,70 @@ export default function ButtonAppBar(props) {
                 }
             }
         });
-        recognition.start();
-        recognition.addEventListener('end', recognition.start);
+        this.recognition.start();
+        this.recognition.addEventListener('end', this.recognition.start);
     }
 
+    render() {
+        return (
+            <div>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" aria-label="menu">
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography variant="h6">
+                            ATKHouse - The ultimate Smart Home
+                        </Typography>
+                        <Button color="inherit" onClick={() => firebase.auth().signOut()}>Logout</Button>
+                    </Toolbar>
+                </AppBar>
 
-    return (
-        <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon/>
-                    </IconButton>
-                    <Typography variant="h6" className={classes.title}>
-                        ATKHouse - The ultimate Smart Home
-                    </Typography>
-                    <Button color="inherit" onClick={() => firebase.auth().signOut()}>Logout</Button>
-                </Toolbar>
-            </AppBar>
-
-            <ThemeProvider>
-                <div className="container">
-                    <div className="App row">
-                        <div className="col-md-6 mt-4">
-                            <div className="card text-center">
-                                <div className="card-header">
-                                    <h4>TKR Smart House</h4>
-                                </div>
-                                <div className="card-body">
-                                    <div className="row">
-                                        <Light/>
-                                        <Switch/>
+                <ThemeProvider>
+                    <div className="container">
+                        <div className="App row">
+                            <div className="col-md-6 mt-4">
+                                <div className="card text-center">
+                                    <div className="card-header">
+                                        <h4>TKR Smart House</h4>
+                                    </div>
+                                    <div className="card-body">
+                                        <div className="row">
+                                            <Light/>
+                                            <Switch/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="col-md-6 mt-4">
-                            <div className="card">
-                                <div className="card-header text-center">
-                                    <h4>Voice Assistant</h4>
-                                </div>
-                                <div className="card-body">
-                                    <div className="App">
-                                        <Microphone audio={audio}
-                                                    startListening={startListening}
-                                                    toggleMicrophone={toggleMicrophone}
-                                                    stopListening={stopListening}/>
-                                        <h4 className="text-center mt-5" id="audioTranscript"/>
-                                        {audio ? <AudioAnalyzer audio={audio}/> : ''}
+                            <div className="col-md-6 mt-4">
+                                <div className="card">
+                                    <div className="card-header text-center">
+                                        <h4>Voice Assistant</h4>
                                     </div>
+                                    <div className="card-body">
+                                        <div className="App">
+                                            <Microphone audio={this.state.audio}
+                                                        startListening={this.startListening}
+                                                        toggleMicrophone={this.toggleMicrophone}
+                                                        stopListening={this.stopListening}
+                                                        stopMicrophone={this.stopMicrophone}
+                                                        getMicrophone={this.getMicrophone}/>
+                                            <h4 className="text-center mt-5" id="audioTranscript"/>
+                                            {this.state.audio ? <AudioAnalyzer audio={this.state.audio}/> : ''}
+                                        </div>
 
+                                    </div>
+                                    {/*{this.state.audio && <div className="card-footer text-center">*/}
+                                    {/*    <h4>Listening....</h4>*/}
+                                    {/*</div>}*/}
                                 </div>
-                                {audio && <div className="card-footer text-center">
-                                    <h4>Listening....</h4>
-                                </div>}
                             </div>
-                        </div>
 
+                        </div>
                     </div>
-                </div>
-            </ThemeProvider>
-        </div>
-    );
+                </ThemeProvider>
+            </div>
+        );
+    }
 }
