@@ -1,7 +1,7 @@
 import React from 'react';
-import '../styles/Microphone.css';
-import MicrophoneOff from '../images/MicrophoneOff.svg';
-import MicrophoneOn from '../images/MicrophoneOn.svg';
+import '../../styles/Microphone.css';
+import MicrophoneOff from '../../images/MicrophoneOff.svg';
+import MicrophoneOn from '../../images/MicrophoneOn.svg';
 
 const Microphone = (props) => {
     return (

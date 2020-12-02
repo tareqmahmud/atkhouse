@@ -1,12 +1,11 @@
 import React from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Home from './components/Home';
-import Login from './components/Login';
-import SignUp from './components/Register';
-import {AuthProvider} from './components/Authentication';
-import PrivateRoute from './components/PrivateRoute';
-import AddPIKey from './components/AddPIKey';
-import Home2 from './components/Home2';
+import SignIn from './components/SignIn/SignIn';
+import SignUp from './components/Signup/Signup';
+import {AuthProvider} from './context/AuthContext';
+import PrivateRoute from './route/PrivateRoute';
+import AddPIKey from './components/RPI/AddPIKey';
 
 function App() {
     return (
@@ -15,9 +14,8 @@ function App() {
                 <div>
                     <PrivateRoute exact path="/" component={Home}/>
                     <PrivateRoute exact path="/add-pi-key" component={AddPIKey}/>
-                    <Route exact path="/login" component={Login}/>
+                    <Route exact path="/signin" component={SignIn}/>
                     <Route exact path="/signup" component={SignUp}/>
-                    <Route exact path="/audio" component={Home2}/>
                 </div>
             </Router>
         </AuthProvider>

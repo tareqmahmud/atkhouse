@@ -1,169 +1,122 @@
-import React, {Component, useContext, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import firebase from './firebase';
-
-import AudioAnalyzer from './AudioAnalyzer';
-import Microphone from './Microphone';
-import Light from './Light';
-import Switch from './Switch';
+import React, {useContext, useState} from 'react';
+import firebase from '../config/firebase';
+import SpeechRecognition, {useSpeechRecognition} from 'react-speech-recognition'
 import ThemeProvider from '../context/ThemeContext';
 import {matchLightActionFromVoice} from '../utils/speechToText';
+import {AuthContext} from '../context/AuthContext';
+import RootContainer from './Layout/RootContainer';
+import {makeStyles} from '@material-ui/core';
+import VoiceCard from './Layout/VoiceCard';
+import SwitchBox from './Layout/SwitchBox';
 
-const useStyles = makeStyles((theme) => ({
+// Material Style
+const useStyles = makeStyles({
     root: {
-        flexGrow: 1,
+        minWidth: 275,
     },
-    menuButton: {
-        marginRight: theme.spacing(2),
+    bullet: {
+        display: 'inline-block',
+        margin: '0 2px',
+        transform: 'scale(0.8)',
     },
     title: {
-        flexGrow: 1,
+        fontSize: 14,
     },
-}));
+    pos: {
+        marginBottom: 12,
+    },
+});
 
-export default class Home extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            audio: null
-        };
-        this.toggleMicrophone = this.toggleMicrophone.bind(this);
-        this.startListening = this.startListening.bind(this);
-        this.stopListening = this.stopListening.bind(this);
-        this.stopMicrophone = this.stopMicrophone.bind(this);
-        this.getMicrophone = this.getMicrophone.bind(this);
-        this.recognition = null;
-    }
+const Home = () => {
+    const [audio, setAudio] = useState(null);
+    const [audioStatus, setAudioStatus] = useState(null);
+    const context = useContext(AuthContext);
+    const currentUserId = context.currentUser.uid;
+    const classes = useStyles();
 
-    async getMicrophone() {
-        const audio = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: false
-        });
-        this.setState({audio});
-    }
+    // Trigger commands after command has been trigger
+    const commands = [
+        {
+            command: '*',
+            callback: async (speech) => {
+                if (speech) {
+                    const firebaseDatabase = firebase.database().ref('/LedStatus');
 
-    stopMicrophone() {
-        this.state.audio.getTracks().forEach(track => track.stop());
-        this.recognition = null;
-        const audioTranscript = document.getElementById('audioTranscript');
-        audioTranscript.innerText = null;
-        this.setState({audio: null});
-    }
+                    let lightStatus = matchLightActionFromVoice(speech);
 
-    stopListening() {
-        const audioTranscript = document.getElementById('audioTranscript');
-        audioTranscript.innerText = null;
-    }
-
-    toggleMicrophone() {
-        this.state.audio ? this.stopMicrophone() : this.getMicrophone();
-    }
-
-    async startListening() {
-        const audio = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: false
-        });
-        this.setState({audio});
-
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        this.recognition = new SpeechRecognition();
-        this.recognition.interimResults = true;
-        this.recognition.lang = 'en-US';
-
-        this.recognition.addEventListener('result', e => {
-            const transcript = Array.from(e.results)
-                .map(result => result[0])
-                .map(result => result.transcript);
-            const audioTranscript = document.getElementById('audioTranscript');
-            audioTranscript.innerText = transcript[0];
-
-            if (e.results[0].isFinal) {
-                let lightStatus = matchLightActionFromVoice(transcript[0]);
-                console.log(transcript[0]);
-
-                if (lightStatus === true) {
-                    firebase.firestore().collection('LEDStatus').doc('rycUkHyKsUl0NnS0Ocxi').update({
-                        'light_status': true
-                    });
-                } else if (lightStatus === false) {
-                    firebase.firestore().collection('LEDStatus').doc('rycUkHyKsUl0NnS0Ocxi').update({
-                        'light_status': false
-                    });
+                    if (lightStatus === true) {
+                        await firebaseDatabase.child(currentUserId).update({
+                            'light_status': true
+                        });
+                    } else if (lightStatus === false) {
+                        await firebaseDatabase.child(currentUserId).update({
+                            'light_status': false
+                        });
+                    }
+                    resetTranscript();
                 }
             }
+        }
+    ]
+
+    // Instance of speech recognition
+    const {transcript, resetTranscript} = useSpeechRecognition({commands});
+
+    /**
+     * Check is browser support WebSpeech or not
+     */
+    if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
+        return null
+    }
+
+    /**
+     * Method for stop listening
+     *
+     * @returns {Promise<void>}
+     */
+    const startListening = async () => {
+        SpeechRecognition.startListening({
+            continuous: true
         });
-        this.recognition.start();
-        this.recognition.addEventListener('end', this.recognition.start);
+        const audio = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: false
+        });
+        setAudio(audio);
+        setAudioStatus(true);
     }
 
-    render() {
-        return (
-            <div>
-                <AppBar position="static">
-                    <Toolbar>
-                        <IconButton edge="start" color="inherit" aria-label="menu">
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography variant="h6">
-                            ATKHouse - The ultimate Smart Home
-                        </Typography>
-                        <Button color="inherit" onClick={() => firebase.auth().signOut()}>Logout</Button>
-                    </Toolbar>
-                </AppBar>
+    /**
+     * Method to stop listening
+     */
+    const stopListening = async () => {
+        SpeechRecognition.stopListening();
+        setAudio(null);
+        setAudioStatus(false);
+        resetTranscript();
+    }
 
-                <ThemeProvider>
-                    <div className="container">
-                        <div className="App row">
-                            <div className="col-md-6 mt-4">
-                                <div className="card text-center">
-                                    <div className="card-header">
-                                        <h4>TKR Smart House</h4>
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="row">
-                                            <Light/>
-                                            <Switch/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+    return (
+        <RootContainer>
+            <ThemeProvider>
+                <div className="container">
+                    <div className="App row">
+                        {/* Switch Box */}
+                        <SwitchBox/>
 
-                            <div className="col-md-6 mt-4">
-                                <div className="card">
-                                    <div className="card-header text-center">
-                                        <h4>Voice Assistant</h4>
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="App">
-                                            <Microphone audio={this.state.audio}
-                                                        startListening={this.startListening}
-                                                        toggleMicrophone={this.toggleMicrophone}
-                                                        stopListening={this.stopListening}
-                                                        stopMicrophone={this.stopMicrophone}
-                                                        getMicrophone={this.getMicrophone}/>
-                                            <h4 className="text-center mt-5" id="audioTranscript"/>
-                                            {this.state.audio ? <AudioAnalyzer audio={this.state.audio}/> : ''}
-                                        </div>
-
-                                    </div>
-                                    {/*{this.state.audio && <div className="card-footer text-center">*/}
-                                    {/*    <h4>Listening....</h4>*/}
-                                    {/*</div>}*/}
-                                </div>
-                            </div>
-
-                        </div>
+                        {/* Voice Command Layout */}
+                        <VoiceCard
+                            audioStatus={audioStatus}
+                            startListening={startListening}
+                            stopListening={stopListening}
+                            transcript={transcript}
+                            audio={audio}
+                        />
                     </div>
-                </ThemeProvider>
-            </div>
-        );
-    }
+                </div>
+            </ThemeProvider>
+        </RootContainer>
+    );
 }
+
+export default Home;

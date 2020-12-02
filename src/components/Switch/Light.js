@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
-import {ThemeContext} from '../context/ThemeContext';
-import LightOn from '../images/light_on.svg';
-import LightOff from '../images/light_off.svg';
+import {ThemeContext} from '../../context/ThemeContext';
+import LightOn from '../../images/light_on.svg';
+import LightOff from '../../images/light_off.svg';
 
 const Light = (props) => {
     const context = useContext(ThemeContext);

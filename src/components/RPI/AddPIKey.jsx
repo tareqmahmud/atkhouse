@@ -1,18 +1,13 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react'; // add {useCallback, useContext}
+import React, {useContext, useEffect, useState} from 'react'; // add {useCallback, useContext}
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {withRouter, Redirect} from 'react-router';
-import app from './firebase.js';
-import {AuthContext} from './Authentication';
-import firebase from './firebase';
+import {AuthContext} from '../../context/AuthContext';
+import firebase from '../../config/firebase';
 import {Link} from 'react-router-dom'
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -94,7 +89,8 @@ export default function AddPIKey({history}) {
                 })
             } else {
                 await firebaseDatabase.child(currentUserId).set({
-                    'rpiKey': rpiKey
+                    'rpiKey': rpiKey,
+                    'light_status': false
                 })
             }
 
@@ -114,7 +110,7 @@ export default function AddPIKey({history}) {
                     <Typography variant="h6" className={classes.title}>
                         ATKHouse - The ultimate Smart Home
                     </Typography>
-                    <Button color="inherit" onClick={() => app.auth().signOut()}>Logout</Button>
+                    <Button color="inherit" onClick={() => firebase.auth().signOut()}>Logout</Button>
                 </Toolbar>
             </AppBar>
 
