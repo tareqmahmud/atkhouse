@@ -93,8 +93,6 @@ function AddPIKey({history}) {
                     'light_status': false
                 })
             }
-
-            console.log('Success');
         }
     }
 

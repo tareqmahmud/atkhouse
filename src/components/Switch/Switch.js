@@ -17,10 +17,8 @@ const Switch = () => {
     };
 
     useEffect(() => {
-        console.log(themeContext);
         firebase.database().ref('/LedStatus/' + currentUserId).on('value', snapshot => {
             const lightStatusData = snapshot.val();
-            console.log(lightStatusData.light_status);
             themeContext.setLightStatus({
                 light_status: lightStatusData.light_status
             });

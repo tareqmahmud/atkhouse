@@ -8,7 +8,6 @@ const ThemeProvider = (props) => {
     });
 
     const updateLightStatus = () => {
-        console.log('Access');
         setLightStatus({
             light_status: !light_status.light_status
         })
