@@ -7,8 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Link} from 'react-router-dom'
-import app from '../../config/firebase';
 import RootContainer from '../Layout/RootContainer';
+import firebase from '../../config/firebase';
 
 
 
@@ -38,9 +38,19 @@ export default function SignUp({history}) {
         event.preventDefault();
         const {email, password} = event.target.elements;
         try {
-            await app
+            // Signup
+            const authUser = await firebase
                 .auth()
                 .createUserWithEmailAndPassword(email.value, password.value);
+
+            // Fetch the signup user id
+            const currentUserId = authUser.user.uid;
+
+            // Add default light status data
+            await firebase.database().ref('/LedStatus').child(currentUserId).set({
+                'light_status': false
+            })
+
             history.push('/');
         } catch (error) {
             alert(error);
