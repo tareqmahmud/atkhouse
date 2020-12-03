@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(3, 0, 2),
     },
 }));
-export default function AddPIKey({history}) {
+function AddPIKey({history}) {
     const [userData, setUserData] = useState(null);
     const [rpiKey, setRPIKey] = useState();
     const context = useContext(AuthContext);

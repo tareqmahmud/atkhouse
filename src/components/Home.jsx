@@ -5,34 +5,15 @@ import ThemeProvider from '../context/ThemeContext';
 import {matchLightActionFromVoice} from '../utils/speechToText';
 import {AuthContext} from '../context/AuthContext';
 import RootContainer from './Layout/RootContainer';
-import {makeStyles} from '@material-ui/core';
 import VoiceCard from './Layout/VoiceCard';
 import SwitchBox from './Layout/SwitchBox';
 
-// Material Style
-const useStyles = makeStyles({
-    root: {
-        minWidth: 275,
-    },
-    bullet: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
-    },
-    title: {
-        fontSize: 14,
-    },
-    pos: {
-        marginBottom: 12,
-    },
-});
 
 const Home = () => {
     const [audio, setAudio] = useState(null);
     const [audioStatus, setAudioStatus] = useState(null);
     const context = useContext(AuthContext);
     const currentUserId = context.currentUser.uid;
-    const classes = useStyles();
 
     // Trigger commands after command has been trigger
     const commands = [

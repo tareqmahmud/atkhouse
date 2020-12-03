@@ -5,7 +5,7 @@ import SignIn from './components/SignIn/SignIn';
 import SignUp from './components/Signup/Signup';
 import {AuthProvider} from './context/AuthContext';
 import PrivateRoute from './route/PrivateRoute';
-import AddPIKey from './components/RPI/AddPIKey';
+import UserAuthId from './components/RPI/UserAuthId';
 
 function App() {
     return (
@@ -13,7 +13,7 @@ function App() {
             <Router>
                 <div>
                     <PrivateRoute exact path="/" component={Home}/>
-                    <PrivateRoute exact path="/add-pi-key" component={AddPIKey}/>
+                    <PrivateRoute exact path="/my-auth-id" component={UserAuthId}/>
                     <Route exact path="/signin" component={SignIn}/>
                     <Route exact path="/signup" component={SignUp}/>
                 </div>
