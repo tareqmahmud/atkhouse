@@ -35,7 +35,7 @@ const RootContainer = (props) => {
                             <MenuIcon/>
                         </IconButton>
                         <Typography variant="h6" className={classes.title}>
-                            ATKHouse - The ultimate Smart Home
+                            ATKHouse - The Ultimate Smart Home
                         </Typography>
                         {currentUser &&
                         <Button color="inherit" onClick={() => firebase.auth().signOut()}>Logout</Button>}
