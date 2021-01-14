@@ -80,7 +80,7 @@ const Home = () => {
             <ThemeProvider>
                 <div className="container">
                     <div className="App row">
-                        <h2 style={{textAlign: 'center'}}>Welcome to dashboard</h2>
+                        <h2 style={{textAlign: 'center'}}>Welcome to RPI Dashboard</h2>
                     </div>
                 </div>
             </ThemeProvider>
