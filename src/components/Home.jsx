@@ -5,8 +5,6 @@ import ThemeProvider from '../context/ThemeContext';
 import {matchLightActionFromVoice} from '../utils/speechToText';
 import {AuthContext} from '../context/AuthContext';
 import RootContainer from './Layout/RootContainer';
-import VoiceCard from './Layout/VoiceCard';
-import SwitchBox from './Layout/SwitchBox';
 
 
 const Home = () => {
@@ -82,17 +80,7 @@ const Home = () => {
             <ThemeProvider>
                 <div className="container">
                     <div className="App row">
-                        {/* Switch Box */}
-                        <SwitchBox/>
-
-                        {/* Voice Command Layout */}
-                        <VoiceCard
-                            audioStatus={audioStatus}
-                            startListening={startListening}
-                            stopListening={stopListening}
-                            transcript={transcript}
-                            audio={audio}
-                        />
+                        <h2 style={{textAlign: 'center'}}>Welcome to dashboard</h2>
                     </div>
                 </div>
             </ThemeProvider>
