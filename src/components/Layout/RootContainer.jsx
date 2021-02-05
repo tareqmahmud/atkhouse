@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import firebase from '../../config/firebase';
 import Copyright from './Copyright';
 import {AuthContext} from '../../context/AuthContext';
+import HomeWorkIcon from '@material-ui/icons/HomeWork';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,7 +20,18 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         flexGrow: 1,
+        textAlign: 'center'
     },
+    mainTitle: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        marginBottom: '10px'
+    },
+    homeIcon: {
+        fontSize: '50px',
+        marginRight: '5px'
+    }
 }));
 
 const RootContainer = (props) => {
@@ -31,11 +43,13 @@ const RootContainer = (props) => {
             <div className={classes.root}>
                 <AppBar position="static">
                     <Toolbar>
-                        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                            <MenuIcon/>
-                        </IconButton>
+                        {/*<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">*/}
+                        {/*    <MenuIcon/>*/}
+                        {/*</IconButton>*/}
                         <Typography variant="h6" className={classes.title}>
-                            ATKHouse - The Ultimate Smart Home
+                            <div className={classes.mainTitle}>
+                                <HomeWorkIcon className={classes.homeIcon}/> ATKHouse - The Ultimate Smart Home
+                            </div>
                         </Typography>
                         {currentUser &&
                         <Button color="inherit" onClick={() => firebase.auth().signOut()}>Logout</Button>}
