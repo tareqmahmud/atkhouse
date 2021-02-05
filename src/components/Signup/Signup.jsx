@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -9,8 +9,7 @@ import Container from '@material-ui/core/Container';
 import {Link} from 'react-router-dom'
 import RootContainer from '../Layout/RootContainer';
 import firebase from '../../config/firebase';
-
-
+import {CircularProgress} from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,10 +33,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function SignUp({history}) {
     const classes = useStyles();
+    const [loader, setLoader] = useState(false);
+
     const handleSignUp = useCallback(async event => {
         event.preventDefault();
         const {email, password} = event.target.elements;
         try {
+            // Enable the loader
+            setLoader(true);
+
             // Signup
             const authUser = await firebase
                 .auth()
@@ -54,8 +58,40 @@ export default function SignUp({history}) {
             history.push('/');
         } catch (error) {
             alert(error);
+
+            // Disable the loader
+            setLoader(false);
         }
     }, [history]);
+
+    const renderLoader = () => {
+        if (loader) {
+            return (
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    disabled={false}
+                >
+                    <CircularProgress color={'secondary'}/>
+                </Button>
+            )
+        }
+
+        return (
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+            >
+                Sign Up
+            </Button>
+        );
+    }
 
     return (
         <RootContainer>
@@ -114,15 +150,9 @@ export default function SignUp({history}) {
                                 />
                             </Grid>
                         </Grid>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            Sign Up
-                        </Button>
+
+                        {renderLoader()}
+
                         <Grid container justify="flex-end">
                             <Grid item>
                                 <Link to="/signin" variant="body2">

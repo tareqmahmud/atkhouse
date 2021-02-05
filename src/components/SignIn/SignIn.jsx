@@ -1,4 +1,4 @@
-import React, {useCallback, useContext} from 'react'; // add {useCallback, useContext}
+import React, {useCallback, useContext, useState} from 'react'; // add {useCallback, useContext}
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -14,6 +14,7 @@ import {AuthContext} from '../../context/AuthContext';
 
 import {Link} from 'react-router-dom'
 import RootContainer from '../Layout/RootContainer';
+import {CircularProgress} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,17 +39,25 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn({history}) {
     const classes = useStyles();
+    const [loader, setLoader] = useState(false);
+
     const handleLogin = useCallback(
         async event => {
             event.preventDefault();
             const {email, password} = event.target.elements;
             try {
+                // enable the loader
+                setLoader(true);
+
                 await app
                     .auth()
                     .signInWithEmailAndPassword(email.value, password.value);
                 history.push('/');
             } catch (error) {
                 alert(error);
+
+                // disable the loader
+                setLoader(false);
             }
         },
         [history]
@@ -57,6 +66,36 @@ export default function SignIn({history}) {
     if (currentUser) {
         return <Redirect to="/"/>;
     }
+
+    const renderLoader = () => {
+        if (loader) {
+            return (
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    disabled={true}
+                >
+                    <CircularProgress color={'secondary'}/>
+                </Button>
+            )
+        }
+
+        return (
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+            >
+                Sign In
+            </Button>
+        );
+    }
+
     return (
         <RootContainer>
             <Container component="main" maxWidth="xs">
@@ -93,15 +132,9 @@ export default function SignIn({history}) {
                             label="Remember me"
                             style={{height: 0, marginTop: '20px'}}
                         />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            Sign In
-                        </Button>
+
+                        {renderLoader()}
+
                         <Grid container>
                             <Grid item>
                                 <Link to="/signup" variant="body2">
