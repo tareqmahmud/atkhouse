@@ -2,8 +2,13 @@ import RPi.GPIO as GPIO
 import pyrebase
 import time
 from config import fireConfig
+from environs import Env
 
 print('Connecting to the firebase .............\n')
+
+# Read Env
+env = Env()
+env.read_env()
 
 # Get the firebase config from config.py file
 firebaseConfig = fireConfig()
@@ -42,11 +47,18 @@ if __name__ == '__main__':
     # Get a reference to the auth service
     auth = firebase.auth()
 
-    # Log the user in
+    # Get the username and password
     try:
+        print("Read credentials from .env")
+        email = env.str("ATKHOUSE_EMAIL")
+        password = env.str("ATKHOUSE_PASSWORD")
+    except:
+        print("No credentails has been found from .env")
         email = str(input('Please enter your account email: '))
         password = str(input('Please enter account password: '))
 
+    # Log the user in
+    try:
         print('\nTrying to Login.......\n')
 
         # Login to user
@@ -85,4 +97,3 @@ if __name__ == '__main__':
     except:
         print('Invalid Credential')
         GPIO.cleanup()
-
