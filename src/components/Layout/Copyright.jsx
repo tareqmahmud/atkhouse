@@ -8,15 +8,15 @@ const Copyright = () => {
     return (
         <Box mt={8}>
             <Typography variant="body2" color="textSecondary" align="center">
-                {'Copyright © '}
-                <Link color="inherit" to="https://tareqmahmud.com">
-                    ATKHouse - Smart Home Solution
-                </Link>{' '}
+                {"Copyright © "}
+                <Link color="inherit" to="http://iotseu.vercel.app">
+                    IoT Home Automation System - Southeast University
+                </Link>{" "}
                 {new Date().getFullYear()}
-                {'.'}
+                {"."}
             </Typography>
         </Box>
-    )
+    );
 }
 
 export default Copyright;

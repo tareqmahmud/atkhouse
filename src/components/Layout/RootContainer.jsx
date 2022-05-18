@@ -48,20 +48,28 @@ const RootContainer = (props) => {
                         {/*</IconButton>*/}
                         <Typography variant="h6" className={classes.title}>
                             <div className={classes.mainTitle}>
-                                <HomeWorkIcon className={classes.homeIcon}/> ATKHouse - The Ultimate Smart Home
+                                <HomeWorkIcon className={classes.homeIcon} />{" "}
+                                IoT Home Automation System - Southeast
+                                University
                             </div>
                         </Typography>
-                        {currentUser &&
-                        <Button color="inherit" onClick={() => firebase.auth().signOut()}>Logout</Button>}
+                        {currentUser && (
+                            <Button
+                                color="inherit"
+                                onClick={() => firebase.auth().signOut()}
+                            >
+                                Logout
+                            </Button>
+                        )}
                     </Toolbar>
                 </AppBar>
 
                 {props.children}
             </div>
 
-            <Copyright/>
+            <Copyright />
         </>
-    )
+    );
 };
 
 export default RootContainer;

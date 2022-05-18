@@ -60,18 +60,28 @@ export default function UserAuthId({history}) {
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon/>
+                    <IconButton
+                        edge="start"
+                        className={classes.menuButton}
+                        color="inherit"
+                        aria-label="menu"
+                    >
+                        <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        ATKHouse - The ultimate Smart Home
+                        IoT Home Automation System - Southeast University
                     </Typography>
-                    <Button color="inherit" onClick={() => firebase.auth().signOut()}>Logout</Button>
+                    <Button
+                        color="inherit"
+                        onClick={() => firebase.auth().signOut()}
+                    >
+                        Logout
+                    </Button>
                 </Toolbar>
             </AppBar>
 
             <Container component="main" maxWidth="xs">
-                <CssBaseline/>
+                <CssBaseline />
                 <div className={classes.paper}>
                     <TextField
                         id="outlined-read-only-input"
@@ -87,22 +97,27 @@ export default function UserAuthId({history}) {
 
                     <Snackbar
                         anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right',
+                            vertical: "bottom",
+                            horizontal: "right",
                         }}
                         open={open}
                         autoHideDuration={1000}
                         onClose={handleClose}
                         message="User authenticated id successfully copy to your clipboard"
                         action={
-                            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
-                                <CloseIcon fontSize="small"/>
+                            <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={handleClose}
+                            >
+                                <CloseIcon fontSize="small" />
                             </IconButton>
                         }
                     />
                 </div>
                 <Box mt={8}>
-                    <Copyright/>
+                    <Copyright />
                 </Box>
             </Container>
         </div>

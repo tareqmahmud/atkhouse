@@ -17,12 +17,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" to="https://tareqmahmud.com">
-                ATKHouse
-            </Link>{' '}
+            {"Copyright © "}
+            <Link color="inherit" to="http://iotseu.vercel.app">
+                IoT Home Automation System - Southeast University
+            </Link>{" "}
             {new Date().getFullYear()}
-            {'.'}
+            {"."}
         </Typography>
     );
 }
@@ -102,18 +102,28 @@ function AddPIKey({history}) {
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon/>
+                    <IconButton
+                        edge="start"
+                        className={classes.menuButton}
+                        color="inherit"
+                        aria-label="menu"
+                    >
+                        <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        ATKHouse - The ultimate Smart Home
+                        IoT Home Automation System - Southeast University
                     </Typography>
-                    <Button color="inherit" onClick={() => firebase.auth().signOut()}>Logout</Button>
+                    <Button
+                        color="inherit"
+                        onClick={() => firebase.auth().signOut()}
+                    >
+                        Logout
+                    </Button>
                 </Toolbar>
             </AppBar>
 
             <Container component="main" maxWidth="xs">
-                <CssBaseline/>
+                <CssBaseline />
                 <div className={classes.paper}>
                     <Typography component="h1" variant="h5">
                         RPI Unique Key
@@ -128,8 +138,12 @@ function AddPIKey({history}) {
                             label="Please enter RaspberryPi Key"
                             name="rpiKey"
                             onChange={handleRPIInputKey}
-                            error={rpiKey === null || rpiKey === ''}
-                            helperText={rpiKey === null || rpiKey === '' ? 'Please Add RPI unique key' : ' '}
+                            error={rpiKey === null || rpiKey === ""}
+                            helperText={
+                                rpiKey === null || rpiKey === ""
+                                    ? "Please Add RPI unique key"
+                                    : " "
+                            }
                             autoFocus
                         />
 
@@ -145,7 +159,7 @@ function AddPIKey({history}) {
                     </form>
                 </div>
                 <Box mt={8}>
-                    <Copyright/>
+                    <Copyright />
                 </Box>
             </Container>
         </div>
